@@ -1,5 +1,7 @@
 """
 Authors: Krzysztof Skwira & Tomasz Lemke
+To run program install
+pip install scikit-fuzzy
 """
 
 import numpy as np
@@ -108,13 +110,6 @@ imprecise rules into a defined, actionable tip is a challenge. This is the
 kind of task at which fuzzy logic excels.
 """
 
-# rule1 = ctrl.Rule(time['short'] & heartRate['Moderate Activity'] & pace['very slow'], trainingEffect['No effect'])
-# rule2 = ctrl.Rule(time['medium'] & heartRate['Weight Control'] & pace['slow'], trainingEffect['Minor effect'])
-# rule3 = ctrl.Rule(time['long'] & heartRate['Aerobic'] & pace['medium'], trainingEffect['Maintaining'])
-# rule4 = ctrl.Rule(time['very long'] & heartRate['Anaerobic'] & pace['fast'], trainingEffect['Improving'])
-# rule5 = ctrl.Rule(time['very long'] & heartRate['VO2 Max'] & pace['fast'], trainingEffect['Highly improving'])
-# rule6 = ctrl.Rule(time['ultra long'] & heartRate['VO2 Max'] & pace['very fast'], trainingEffect['Overloading!'])
-
 rule1 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long'] | time['medium']) & heartRate['VO2 Max'] & pace['very fast'], trainingEffect['Overloading!'])
 rule2 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & heartRate['VO2 Max'] & pace['fast'], trainingEffect['Overloading!'])
 rule3 = ctrl.Rule((time['ultra long'] | time['very long']) & heartRate['VO2 Max'] & pace['medium'], trainingEffect['Overloading!'])
@@ -133,6 +128,51 @@ rule14 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & hea
 rule15 = ctrl.Rule(time['ultra long'] & heartRate['Aerobic'] & (pace['fast'] | pace['medium']), trainingEffect['Highly improving'])
 rule16 = ctrl.Rule(time['very long'] & heartRate['Aerobic'] & pace['fast'], trainingEffect['Highly improving'])
 
+rule17 = ctrl.Rule(time['short'] & heartRate['VO2 Max'] & pace['very slow'], trainingEffect['Improving'])
+rule18 = ctrl.Rule((time['medium'] | time['short']) & heartRate['VO2 Max'] & pace['slow'], trainingEffect['Improving'])
+rule19 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & heartRate['Anaerobic'] & pace['very slow'], trainingEffect['Improving'])
+rule20 = ctrl.Rule((time['very long'] | time['long'] | time['medium']) & heartRate['Anaerobic'] & pace['slow'], trainingEffect['Improving'])
+rule21 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Anaerobic'] & pace['medium'], trainingEffect['Improving'])
+rule22 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Anaerobic'] & pace['fast'], trainingEffect['Improving'])
+rule23 = ctrl.Rule(time['short'] & heartRate['Anaerobic'] & pace['very fast'], trainingEffect['Improving'])
+rule24 = ctrl.Rule((time['ultra long'] | time['very long']) & heartRate['Aerobic'] & pace['very slow'], trainingEffect['Improving'])
+rule25 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & heartRate['Aerobic'] & pace['slow'], trainingEffect['Improving'])
+rule26 = ctrl.Rule((time['very long'] | time['long'] | time['medium']) & heartRate['Aerobic'] & pace['medium'], trainingEffect['Improving'])
+rule27 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Aerobic'] & pace['fast'], trainingEffect['Improving'])
+rule28 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Aerobic'] & pace['very fast'], trainingEffect['Improving'])
+rule29 = ctrl.Rule(time['ultra long'] & heartRate['Weight Control'] & pace['medium'], trainingEffect['Improving'])
+rule30 = ctrl.Rule((time['ultra long'] | time['very long']) & heartRate['Weight Control'] & pace['fast'], trainingEffect['Improving'])
+rule31 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & heartRate['Weight Control'] & pace['very fast'], trainingEffect['Improving'])
+rule32 = ctrl.Rule(time['ultra long'] & heartRate['Moderate Activity'] & pace['fast'], trainingEffect['Improving'])
+rule33 = ctrl.Rule((time['ultra long'] | time['very long']) & heartRate['Moderate Activity'] & pace['very fast'], trainingEffect['Improving'])
+
+rule34 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Anaerobic'] & pace['very slow'], trainingEffect['Maintaining'])
+rule35 = ctrl.Rule(time['short'] & heartRate['Anaerobic'] & pace['slow'], trainingEffect['Maintaining'])
+rule36 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Aerobic'] & pace['very slow'], trainingEffect['Maintaining'])
+rule37 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Aerobic'] & pace['slow'], trainingEffect['Maintaining'])
+rule38 = ctrl.Rule(time['short'] & heartRate['Aerobic'] & pace['medium'], trainingEffect['Maintaining'])
+rule39 = ctrl.Rule((time['ultra long'] | time['very long']) & heartRate['Weight Control'] & pace['very slow'], trainingEffect['Maintaining'])
+rule40 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & heartRate['Weight Control'] & pace['slow'], trainingEffect['Maintaining'])
+rule41 = ctrl.Rule((time['very long'] | time['long'] | time['medium']) & heartRate['Weight Control'] & pace['medium'], trainingEffect['Maintaining'])
+rule42 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Weight Control'] & pace['fast'], trainingEffect['Maintaining'])
+rule43 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Weight Control'] & pace['very fast'], trainingEffect['Maintaining'])
+rule44 = ctrl.Rule(time['ultra long'] & heartRate['Moderate Activity'] & pace['slow'], trainingEffect['Maintaining'])
+rule45 = ctrl.Rule((time['ultra long'] | time['very long']) & heartRate['Moderate Activity'] & pace['medium'], trainingEffect['Maintaining'])
+rule46 = ctrl.Rule((time['very long'] | time['long'] | time['medium']) & heartRate['Moderate Activity'] & pace['fast'], trainingEffect['Maintaining'])
+rule47 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Moderate Activity'] & pace['very fast'], trainingEffect['Maintaining'])
+
+rule48 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Weight Control'] & pace['very slow'], trainingEffect['Minor effect'])
+rule49 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Weight Control'] & pace['slow'], trainingEffect['Minor effect'])
+rule50 = ctrl.Rule(time['short'] & heartRate['Weight Control'] & pace['medium'], trainingEffect['Minor effect'])
+rule51 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long']) & heartRate['Moderate Activity'] & pace['very slow'], trainingEffect['Minor effect'])
+rule52 = ctrl.Rule((time['very long'] | time['long'] | time['medium']) & heartRate['Moderate Activity'] & pace['slow'], trainingEffect['Minor effect'])
+rule53 = ctrl.Rule((time['long'] | time['medium'] | time['short']) & heartRate['Moderate Activity'] & pace['medium'], trainingEffect['Minor effect'])
+rule54 = ctrl.Rule(time['short'] & heartRate['Moderate Activity'] & pace['fast'], trainingEffect['Minor effect'])
+
+rule55 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Moderate Activity'] & pace['very slow'], trainingEffect['No effect'])
+rule56 = ctrl.Rule(time['short'] & heartRate['Moderate Activity'] & pace['slow'], trainingEffect['No effect'])
+
+rule33.view()
 
 """
 Control System Creation and Simulation
@@ -143,7 +183,12 @@ via:
 """
 
 training_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10,
-                                    rule11, rule12, rule13, rule14, rule15, rule16])
+                                    rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19,
+                                    rule20, rule21, rule22, rule23, rule24, rule25, rule26, rule27, rule28,
+                                    rule29, rule30, rule31, rule32, rule33, rule34, rule35, rule36, rule37,
+                                    rule38, rule39, rule40, rule41, rule42, rule43, rule44, rule45, rule46,
+                                    rule47, rule48, rule49, rule50, rule51, rule52, rule53, rule54, rule55,
+                                    rule56])
 
 """
 In order to simulate this control system, we will create a
@@ -164,9 +209,10 @@ and the service 9.8 of 10.
 # Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
 # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
 
-training.input['total time (min)'] = 150
-training.input['heart rate (BPM)'] = 195
-training.input['average pace (km/h)'] = 20
+training.input['total time (min)'] = 0
+training.input['heart rate (BPM)'] = 0
+training.input['average pace (km/h)'] = 0
+
 
 # Crunch the numbers
 training.compute()
@@ -174,5 +220,22 @@ training.compute()
 """
 Once computed, we can view the result as well as visualize it.
 """
-print(training.output['training effect'])
+
+# print(training.output['training effect'])
+
+effort = round(training.output['training effect'], 2)
+print(f"Your training effort is: {effort}")
 trainingEffect.view(sim=training)
+
+if 0 <= effort <= 0.99:
+    print("No effect")
+elif 1 <= effort <= 1.99:
+    print("Minor effect")
+elif 2 <= effort <= 2.99:
+    print("Maintaining")
+elif 3 <= effort <= 3.99:
+    print("Improving")
+elif 4 <= effort <= 4.99:
+    print("Highly improving")
+elif 5 <= effort:
+    print("Overloading!")
