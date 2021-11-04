@@ -2,6 +2,7 @@
 Authors: Krzysztof Skwira & Tomasz Lemke
 To run program install
 pip install scikit-fuzzy
+pip install matplotlib
 """
 
 import numpy as np
@@ -9,70 +10,63 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 """
-The Tipping Problem
+The Training Effect stat
 -------------------
 
-Let's create a fuzzy control system which models how you might choose to tip
-at a restaurant.  When tipping, you consider the service and food quality,
-rated between 0 and 10.  You use this to leave a tip of between 0 and 25%.
+The relationship between activity and outcome isn’t always the same. 
+Similar runs can produce different results depending on your Fitness Level, training history, and even your training environment.
+Training Effect describes how your training session is expected to affect your aerobic fitness level, that is your VO2max.
 
+In order to formulate such stat we need to take into consideration some of the basic measurements of the activity.
 We would formulate this problem as:
 
 * Antecednets (Inputs)
-   - `service`
-      * Universe (ie, crisp value range): How good was the service of the wait
-        staff, on a scale of 0 to 10?
-      * Fuzzy set (ie, fuzzy value range): poor, acceptable, amazing
-   - `food quality`
-      * Universe: How tasty was the food, on a scale of 0 to 10?
-      * Fuzzy set: bad, decent, great
+   - `Total time(in minutes)`
+      * Universe (ie, crisp value range): What was your total time spent running?
+      * Fuzzy set (ie, fuzzy value range): short, medium, long, very long, ultra long
+   - `average Heart Rate`
+      * Universe: What was your average Heart Rate(HR) during the exercise ?
+      * Fuzzy set: Moderate Activity, Weight Control, Aerobic, Anaerobic, VO2 Max
+    - `average Running Pace`
+      * Universe: What was your average Running Pace ?
+      Formula: Pace = Total time(in min) / Distance (in km)
+      * Fuzzy set: very slow, slow, medium, fast, very fast
 * Consequents (Outputs)
-   - `tip`
-      * Universe: How much should we tip, on a scale of 0% to 25%
-      * Fuzzy set: low, medium, high
-* Rules
-   - IF the *service* was good  *or* the *food quality* was good,
-     THEN the tip will be high.
-   - IF the *service* was average, THEN the tip will be medium.
-   - IF the *service* was poor *and* the *food quality* was poor
-     THEN the tip will be low.
-* Usage
-   - If I tell this controller that I rated:
-      * the service as 9.8, and
-      * the quality as 6.5,
-   - it would recommend I leave:
-      * a 20.2% tip.
-
+   - `Training effect`
+      * Universe: How did the training affected my fitness level, on a scale of 0 to 5.
+      * Fuzzy set: No effect, Minor effect, Maintaining, Improving, Highly improving, Overloading!
 
 Creating the Tipping Controller Using the skfuzzy control API
 -------------------------------------------------------------
 
 We can use the `skfuzzy` control system API to model this.  First, let's
 define fuzzy variables
+
+Age is an important factor when calculating the Vo2 Max number which is later used in the calculations
 """
 # Input your age to calculate the maximum heart rate
 age = 35
-voMax = 220 - age
+vo2Max = 220 - age
 
 # New Antecedent/Consequent objects hold universe variables and membership functions
 time = ctrl.Antecedent(np.arange(0, 151, 1), 'total time (min)')
-heartRate = ctrl.Antecedent(np.arange(0.5*voMax, voMax+1, 1), 'heart rate (BPM)')
+heartRate = ctrl.Antecedent(np.arange(0.5 * vo2Max, vo2Max + 1, 1), 'heart rate (BPM)')
 pace = ctrl.Antecedent(np.arange(6, 20.1, 0.1), 'average pace (km/h)')
 
-trainingEffect = ctrl.Consequent(np.arange(0, 6, 1), 'training effect')
+trainingEffect = ctrl.Consequent(np.arange(0, 5.01, 0.01), 'training effect')
 
-# Auto-membership function population is possible with .automf(3, 5, or 7)
-# Custom membership functions can be built interactively with a familiar, Pythonic API
-
+# Custom membership functions for time
 time['short'] = fuzz.trimf(time.universe, [0, 0, 20])
 time['medium'] = fuzz.trimf(time.universe, [15, 30, 45])
 time['long'] = fuzz.trimf(time.universe, [40, 55, 70])
 time['very long'] = fuzz.trimf(time.universe, [60, 90, 120])
 time['ultra long'] = fuzz.trimf(time.universe, [100, 150, 150])
 
+# Auto-membership function population for HR
 heartRate.automf(5, 'quality',
                  ['Moderate Activity', 'Weight Control', 'Aerobic', 'Anaerobic', 'VO2 Max'])
 
+# Custom membership functions for pace
 pace['very slow'] = fuzz.trimf(pace.universe, [6, 6, 8])
 pace['slow'] = fuzz.trimf(pace.universe, [7.5, 9, 10])
 pace['medium'] = fuzz.trimf(pace.universe, [9.5, 11, 12])
@@ -80,13 +74,10 @@ pace['fast'] = fuzz.trimf(pace.universe, [11.5, 14, 16.5])
 pace['very fast'] = fuzz.trimf(pace.universe, [14.5, 20, 20])
 
 
+# Auto-membership function population for training effect
 trainingEffect.automf(6, 'quality',
                       ['No effect', 'Minor effect', 'Maintaining', 'Improving', 'Highly improving', 'Overloading!'])
 
-
-"""
-To help understand what the membership looks like, use the ``view`` methods.
-"""
 # time.view()
 # heartRate.view()
 # pace.view()
@@ -97,17 +88,10 @@ To help understand what the membership looks like, use the ``view`` methods.
 Fuzzy rules
 -----------
 
-Now, to make these triangles useful, we define the *fuzzy relationship*
-between input and output variables. For the purposes of our example, consider
-three simple rules:
-
-1. If the food is poor OR the service is poor, then the tip will be low
-2. If the service is average, then the tip will be medium
-3. If the food is good OR the service is good, then the tip will be high.
-
-Most people would agree on these rules, but the rules are fuzzy. Mapping the
-imprecise rules into a defined, actionable tip is a challenge. This is the
+Now, to make these triangles useful, we define the *fuzzy relationship* between input and output variables. 
+Mapping the imprecise rules into a defined, actionable training effect is a challenge. This is the
 kind of task at which fuzzy logic excels.
+Below are all the rules listed
 """
 
 rule1 = ctrl.Rule((time['ultra long'] | time['very long'] | time['long'] | time['medium']) & heartRate['VO2 Max'] & pace['very fast'], trainingEffect['Overloading!'])
@@ -191,27 +175,20 @@ training_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, ru
                                     rule56])
 
 """
-In order to simulate this control system, we will create a
-``ControlSystemSimulation``.  Think of this object representing our controller
-applied to a specific set of circumstances.  For tipping, this might be tipping
-Sharon at the local brew-pub.  We would create another
-``ControlSystemSimulation`` when we're trying to apply our ``tipping_ctrl``
-for Travis at the cafe because the inputs would be different.
+In order to simulate this control system, we will create a ``ControlSystemSimulation``.
 """
 
 training = ctrl.ControlSystemSimulation(training_ctrl)
 
 """
 We can now simulate our control system by simply specifying the inputs
-and calling the ``compute`` method.  Suppose we rated the quality 6.5 out of 10
-and the service 9.8 of 10.
+and calling the ``compute`` method.  
 """
-# Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
-# Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
 
-training.input['total time (min)'] = 0
-training.input['heart rate (BPM)'] = 0
-training.input['average pace (km/h)'] = 0
+# Hard coded values(for simplicity) which can be changed into an input prompt if needed.
+training.input['total time (min)'] = 150
+training.input['heart rate (BPM)'] = 185
+training.input['average pace (km/h)'] = 20
 
 
 # Crunch the numbers
