@@ -81,8 +81,8 @@ trainingEffect.automf(6, 'quality',
 # time.view()
 # heartRate.view()
 # pace.view()
-
 # trainingEffect.view()
+
 
 """
 Fuzzy rules
@@ -156,8 +156,6 @@ rule54 = ctrl.Rule(time['short'] & heartRate['Moderate Activity'] & pace['fast']
 rule55 = ctrl.Rule((time['medium'] | time['short']) & heartRate['Moderate Activity'] & pace['very slow'], trainingEffect['No effect'])
 rule56 = ctrl.Rule(time['short'] & heartRate['Moderate Activity'] & pace['slow'], trainingEffect['No effect'])
 
-rule33.view()
-
 """
 Control System Creation and Simulation
 ---------------------------------------
@@ -186,9 +184,9 @@ and calling the ``compute`` method.
 """
 
 # Hard coded values(for simplicity) which can be changed into an input prompt if needed.
-training.input['total time (min)'] = 150
-training.input['heart rate (BPM)'] = 185
-training.input['average pace (km/h)'] = 20
+training.input['total time (min)'] = 42
+training.input['heart rate (BPM)'] = 125
+training.input['average pace (km/h)'] = 9.3
 
 
 # Crunch the numbers
@@ -197,8 +195,6 @@ training.compute()
 """
 Once computed, we can view the result as well as visualize it.
 """
-
-# print(training.output['training effect'])
 
 effort = round(training.output['training effect'], 2)
 print(f"Your training effort is: {effort}")
